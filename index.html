@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Suno 提示词生成器 Pro</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --accent: #8b5cf6; /* 紫色主调，对应Suno */
+      --accent-hover: #7c3aed;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --border: #334155;
+      --tag-bg: #334155;
+      --tag-active: #8b5cf6;
+    }
+    
+    * { box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .wrap {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin: 0 0 8px 0;
+      font-weight: 700;
+      background: linear-gradient(90deg, #fff, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.lead {
+      color: var(--muted);
+      margin: 0;
+      font-size: 14px;
+    }
+
+    /* Grid Layout */
+    .grid-container {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .grid-container { grid-template-columns: 1fr; }
+    }
+
+    /* Left Sidebar (Selects) */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Main Content (Tags & Result) */
+    .main-area {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Cards */
+    .section-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Form Elements */
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    select {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    select:focus { border-color: var(--accent); }
+
+    /* Tags Cloud */
+    .tags-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag-btn {
+      background: var(--tag-bg);
+      border: 1px solid transparent;
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 20px; /* Pill shape */
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .tag-btn:hover {
+      background: #475569;
+    }
+
+    .tag-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    /* Output Area */
+    textarea {
+      width: 100%;
+      height: 120px;
+      background: #020617;
+      border: 1px solid var(--border);
+      color: #a5b4fc;
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: "Menlo", "Monaco", monospace;
+      resize: vertical;
+      line-height: 1.6;
+    }
+    textarea:focus { outline: 1px solid var(--accent); }
+
+    .action-bar {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 15px;
+      flex-grow: 1;
+    }
+    button.primary:hover { background: var(--accent-hover); }
+
+    button.secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button.secondary:hover { background: rgba(255,255,255,0.05); }
+
+    .clear-tags {
+      font-size: 12px;
+      color: var(--accent);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <header>
+      <h1>Suno 提示词生成器 Pro</h1>
+      <p class="lead">通过中文选项组合，一键生成高质量的 Suno 英文提示词。支持风格、乐器、情绪及专业参数定制。</p>
+    </header>
+
+    <div class="grid-container">
+      
+      <aside class="sidebar">
+        <div class="section-card">
+          <div class="section-title">基础架构</div>
+          
+          <div style="margin-bottom: 12px;">
+            <label>音乐流派 (Genre)</label>
+            <select id="genreSelect" onchange="updatePrompt()">
+              </select>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <label>人声类型 (Vocals)</label>
+            <select id="vocalSelect" onchange="updatePrompt()">
+              <option value="">随机 / 默认</option>
+              <option value="Male Vocals">男声 (Male)</option>
+              <option value="Female Vocals">女声 (Female)</option>
+              <option value="Duet">男女对唱 (Duet)</option>
+              <option value="Choir">合唱团 (Choir)</option>
+              <option value="Instrumental">纯音乐 (Instrumental)</option>
+            </select>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <label>速度 (Tempo)</label>
+            <select id="tempoSelect" onchange="updatePrompt()">
+              <option value="">默认</option>
+              <option value="Slow Tempo, 60-80 BPM">慢速 (Slow)</option>
+              <option value="Mid-Tempo, 90-110 BPM">中速 (Mid)</option>
+              <option value="Up-Tempo, 120-140 BPM">快速 (Fast)</option>
+              <option value="Very Fast, 160+ BPM">极速 (Very Fast)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">生成操作</div>
+            <button class="primary" id="generateBtn" onclick="updatePrompt(true)">🎲 随机组合并生成</button>
+            <div style="margin-top:8px; font-size:12px; color:var(--muted); text-align:center;">
+                上方按钮会根据选定流派，随机填充右侧的细节标签。
+            </div>
+        </div>
+      </aside>
+
+      <main class="main-area">
+        
+        <div class="section-card">
+          <div class="section-title">
+            <span>特色乐器 (Instruments)</span>
+            <span class="clear-tags" onclick="clearTags('inst')">清空</span>
+          </div>
+          <div class="tags-wrapper" id="instContainer">
+            </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-title">
+            <span>情绪与氛围 (Mood & Vibe)</span>
+            <span class="clear-tags" onclick="clearTags('mood')">清空</span>
+          </div>
+          <div class="tags-wrapper" id="moodContainer"></div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-title">
+            <span>制作与音质 (Production)</span>
+            <span class="clear-tags" onclick="clearTags('tech')">清空</span>
+          </div>
+          <div class="tags-wrapper" id="techContainer"></div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-title">最终提示词 (Result)</div>
+          <textarea id="resultBox" placeholder="选择上方标签或点击生成按钮，此处将显示生成的英文 Prompt..." readonly></textarea>
+          
+          <div class="action-bar">
+            <button class="primary" style="flex-grow:0; width:120px;" onclick="copyToClipboard()">复制提示词</button>
+            <button class="secondary" onclick="updatePrompt(false)">仅刷新文本</button>
+            <span id="copyMsg" style="color:#4ade80; display:none; align-self:center; font-size:13px;">✅ 已复制!</span>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // --- Data Definitions (Chinese Label -> English Value) ---
+    
+    const genres = [
+      { label: "流行 (Pop)", value: "Pop" },
+      { label: "华语流行 (C-Pop)", value: "Mandopop, C-Pop" },
+      { label: "摇滚 (Rock)", value: "Rock" },
+      { label: "电子/舞曲 (EDM)", value: "Electronic, EDM, Dance" },
+      { label: "中国风/古风 (GuFeng)", value: "Chinese Traditional, GuFeng, Pentatonic Scale" },
+      { label: "电影配乐 (Cinematic)", value: "Cinematic Score, Epic, Soundtrack" },
+      { label: "嘻哈/说唱 (Hip Hop)", value: "Hip Hop, Trap, Rap" },
+      { label: "爵士 (Jazz)", value: "Jazz, Smooth Jazz" },
+      { label: "R&B/灵魂乐", value: "R&B, Soul, Neo-Soul" },
+      { label: "氛围音乐 (Ambient)", value: "Ambient, Ethereal, Soundscape" },
+      { label: "民谣 (Folk)", value: "Acoustic Folk, Indie Folk" },
+      { label: "赛博朋克 (Cyberpunk)", value: "Cyberpunk, Industrial, Synthwave" },
+      { label: "古典 (Classical)", value: "Classical, Orchestral" }
+    ];
+
+    const instruments = [
+      { label: "钢琴", value: "Piano" },
+      { label: "吉他(木)", value: "Acoustic Guitar" },
+      { label: "吉他(电)", value: "Electric Guitar" },
+      { label: "贝斯", value: "Bass" },
+      { label: "鼓组", value: "Drums" },
+      { label: "合成器", value: "Synthesizer" },
+      { label: "弦乐", value: "Strings" },
+      { label: "小提琴", value: "Violin" },
+      { label: "大提琴", value: "Cello" },
+      { label: "二胡", value: "Erhu" },
+      { label: "古筝", value: "Guzheng" },
+      { label: "琵琶", value: "Pipa" },
+      { label: "笛子", value: "Dizi Bamboo Flute" },
+      { label: "箫", value: "Xiao Flute" },
+      { label: "萨克斯", value: "Saxophone" },
+      { label: "808鼓机", value: "808 Drum Machine" }
+    ];
+
+    const moods = [
+      { label: "欢快", value: "Upbeat, Happy" },
+      { label: "伤感", value: "Sad, Melancholic" },
+      { label: "史诗", value: "Epic, Heroic" },
+      { label: "空灵", value: "Ethereal, Dreamy" },
+      { label: "治愈", value: "Healing, Soothing" },
+      { label: "浪漫", value: "Romantic, Sentimental" },
+      { label: "黑暗", value: "Dark, Ominous" },
+      { label: "充满力量", value: "Powerful, Energetic" },
+      { label: "放松", value: "Chill, Relaxing" },
+      { label: "神秘", value: "Mysterious" },
+      { label: "怀旧", value: "Nostalgic" },
+      { label: "迷幻", value: "Psychedelic" }
+    ];
+
+    const techSpecs = [
+      { label: "高保真", value: "High Fidelity" },
+      { label: "宽声场", value: "Wide Stereo" },
+      { label: "混响", value: "Reverb" },
+      { label: "重低音", value: "Heavy Bass" },
+      { label: "Lo-Fi质感", value: "Lo-Fi, Vinyl Crackle" },
+      { label: "清晰人声", value: "Crisp Vocals" },
+      { label: "大编制", value: "Orchestral Arrangement" },
+      { label: "极简", value: "Minimalistic" }
+    ];
+
+    // --- State Management ---
+    const state = {
+      genre: genres[0].value,
+      vocal: "",
+      tempo: "",
+      selectedInsts: new Set(),
+      selectedMoods: new Set(),
+      selectedTech: new Set()
+    };
+
+    // --- Initialization ---
+    function init() {
+      // Populate Genre Select
+      const genreSel = document.getElementById('genreSelect');
+      genres.forEach(g => {
+        const opt = document.createElement('option');
+        opt.value = g.value;
+        opt.textContent = g.label;
+        genreSel.appendChild(opt);
+      });
+
+      // Render Tags
+      renderTags('instContainer', instruments, state.selectedInsts);
+      renderTags('moodContainer', moods, state.selectedMoods);
+      renderTags('techContainer', techSpecs, state.selectedTech);
+
+      // Initial Generate
+      updatePrompt(false);
+    }
+
+    function renderTags(containerId, dataList, storageSet) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      dataList.forEach(item => {
+        const btn = document.createElement('div');
+        btn.className = 'tag-btn';
+        if(storageSet.has(item.value)) btn.classList.add('active');
+        btn.textContent = item.label;
+        btn.onclick = () => {
+          if (storageSet.has(item.value)) {
+            storageSet.delete(item.value);
+            btn.classList.remove('active');
+          } else {
+            storageSet.add(item.value);
+            btn.classList.add('active');
+          }
+          updatePrompt(false); // Update text without full randomization
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    // --- Logic ---
+
+    function clearTags(type) {
+      if(type === 'inst') state.selectedInsts.clear();
+      if(type === 'mood') state.selectedMoods.clear();
+      if(type === 'tech') state.selectedTech.clear();
+      
+      // Re-render to clear UI classes
+      renderTags('instContainer', instruments, state.selectedInsts);
+      renderTags('moodContainer', moods, state.selectedMoods);
+      renderTags('techContainer', techSpecs, state.selectedTech);
+      
+      updatePrompt(false);
+    }
+
+    function pickRandom(arr, count) {
+      const shuffled = arr.sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
+    }
+
+    function updatePrompt(randomize = false) {
+      // Update basic selects
+      state.genre = document.getElementById('genreSelect').value;
+      state.vocal = document.getElementById('vocalSelect').value;
+      state.tempo = document.getElementById('tempoSelect').value;
+
+      // If Randomize Button clicked, auto-select some tags
+      if (randomize) {
+        // Clear current sets
+        state.selectedInsts.clear();
+        state.selectedMoods.clear();
+        state.selectedTech.clear();
+
+        // Logic: Pick 1-2 instruments, 1-2 moods, 1 tech
+        const randomInsts = pickRandom(instruments, Math.floor(Math.random() * 2) + 1);
+        const randomMoods = pickRandom(moods, Math.floor(Math.random() * 2) + 1);
+        const randomTech = pickRandom(techSpecs, 1);
+
+        randomInsts.forEach(i => state.selectedInsts.add(i.value));
+        randomMoods.forEach(m => state.selectedMoods.add(m.value));
+        randomTech.forEach(t => state.selectedTech.add(t.value));
+
+        // Re-render UI to show what was picked
+        renderTags('instContainer', instruments, state.selectedInsts);
+        renderTags('moodContainer', moods, state.selectedMoods);
+        renderTags('techContainer', techSpecs, state.selectedTech);
+      }
+
+      // Construct Prompt String
+      let parts = [];
+      
+      // 1. Style/Genre (Required)
+      if (state.genre) parts.push(state.genre);
+
+      // 2. Moods
+      if (state.selectedMoods.size > 0) parts.push(...state.selectedMoods);
+
+      // 3. Instruments
+      if (state.selectedInsts.size > 0) parts.push(...state.selectedInsts);
+
+      // 4. Vocals
+      if (state.vocal) parts.push(state.vocal);
+
+      // 5. Tempo
+      if (state.tempo) parts.push(state.tempo);
+
+      // 6. Tech
+      if (state.selectedTech.size > 0) parts.push(...state.selectedTech);
+
+      // Final string assembly
+      const promptText = parts.join(', ');
+      document.getElementById('resultBox').value = promptText;
+    }
+
+    function copyToClipboard() {
+      const el = document.getElementById('resultBox');
+      el.select();
+      document.execCommand('copy');
+      
+      const msg = document.getElementById('copyMsg');
+      msg.style.display = 'block';
+      setTimeout(() => {
+        msg.style.display = 'none';
+      }, 2000);
+    }
+
+    // Start
+    init();
+
+  </script>
+</body>
+</html>
