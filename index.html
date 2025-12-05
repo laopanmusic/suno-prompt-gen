@@ -3,508 +3,695 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Suno 提示词生成器 Pro</title>
+  <title>Suno & 歌词全能工作台 v8.5 (终极完整版)</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --card: #1e293b;
-      --accent: #8b5cf6; /* 紫色主调，对应Suno */
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      --card-bg: rgba(30, 41, 59, 0.9);
+      --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+      --accent: #8b5cf6;
       --accent-hover: #7c3aed;
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-      --border: #334155;
-      --tag-bg: #334155;
-      --tag-active: #8b5cf6;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --input-bg: rgba(15, 23, 42, 0.6);
+      --tag-bg: rgba(139, 92, 246, 0.2);
+      --tag-border: 1px solid rgba(139, 92, 246, 0.4);
+      --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+      --btn-secondary-bg: rgba(255, 255, 255, 0.1);
     }
-    
-    * { box-sizing: border-box; }
-    
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
-      background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
-      color: var(--text);
       margin: 0;
-      padding: 20px;
+      background: var(--bg-gradient);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--text-main);
       min-height: 100vh;
-      line-height: 1.5;
-    }
-
-    .wrap {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    header {
-      margin-bottom: 24px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 16px;
-    }
-
-    h1 {
-      font-size: 24px;
-      margin: 0 0 8px 0;
-      font-weight: 700;
-      background: linear-gradient(90deg, #fff, #a78bfa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    p.lead {
-      color: var(--muted);
-      margin: 0;
-      font-size: 14px;
-    }
-
-    /* Grid Layout */
-    .grid-container {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 20px;
-    }
-
-    @media (max-width: 768px) {
-      .grid-container { grid-template-columns: 1fr; }
-    }
-
-    /* Left Sidebar (Selects) */
-    .sidebar {
       display: flex;
-      flex-direction: column;
-      gap: 16px;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
-    /* Main Content (Tags & Result) */
-    .main-area {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    /* Cards */
-    .section-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
-    }
-
-    .section-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--muted);
-      margin-bottom: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    /* Form Elements */
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    select {
+    .container {
       width: 100%;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s;
+      max-width: 1380px;
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 24px;
     }
-    select:focus { border-color: var(--accent); }
 
-    /* Tags Cloud */
-    .tags-wrapper {
+    /* Glassmorphism Card */
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 16px;
+      border: var(--glass-border);
+      box-shadow: var(--shadow);
+      padding: 24px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+      flex-direction: column;
     }
 
-    .tag-btn {
-      background: var(--tag-bg);
-      border: 1px solid transparent;
-      color: var(--text);
-      padding: 6px 12px;
-      border-radius: 20px; /* Pill shape */
+    h1 { margin: 0; font-size: 22px; font-weight: 700; background: linear-gradient(90deg, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin: 24px 0 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; }
+    
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
+    
+    input, select, textarea {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #fff;
       font-size: 13px;
-      cursor: pointer;
-      transition: all 0.2s;
-      user-select: none;
+      box-sizing: border-box;
+      transition: 0.2s;
     }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); background: rgba(0,0,0,0.4); }
+    
+    optgroup { font-weight: bold; background: #334155; color: #a78bfa; font-style: normal; }
+    option { background: #0f172a; color: #fff; padding: 4px; }
 
-    .tag-btn:hover {
-      background: #475569;
+    /* 多选标签区域 */
+    .tags-container {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; min-height: 0;
     }
+    .tag {
+      background: var(--tag-bg); border: var(--tag-border); color: #e2e8f0;
+      font-size: 11px; padding: 3px 8px; border-radius: 4px; cursor: pointer;
+      display: flex; align-items: center; gap: 4px; transition: 0.2s;
+    }
+    .tag:hover { background: rgba(139, 92, 246, 0.4); }
+    .tag::after { content: "×"; font-weight: bold; opacity: 0.7; }
+    
+    /* 参数网格 */
+    .params-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-    .tag-btn.active {
-      background: var(--accent);
-      color: white;
-      border-color: rgba(255,255,255,0.2);
+    /* Tabs */
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+    .tab-btn {
+      background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 15px; font-weight: 600; padding: 8px 16px; border-radius: 6px; transition: 0.2s;
     }
+    .tab-btn.active { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+    .tab-content { display: none; height: 100%; flex-direction: column; }
+    .tab-content.active { display: flex; }
+
+    /* Action Buttons */
+    .btn {
+      background: var(--accent); color: white; border: none; padding: 14px; border-radius: 10px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 10px; transition: 0.2s; font-size: 15px;
+    }
+    .btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    
+    .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+    .btn-secondary { background: var(--btn-secondary-bg); border: 1px solid rgba(255,255,255,0.1); margin-top:0; color: var(--text-main); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.2); }
+    .btn-small { padding: 10px; font-size: 13px; }
 
     /* Output Area */
-    textarea {
-      width: 100%;
-      height: 120px;
-      background: #020617;
-      border: 1px solid var(--border);
-      color: #a5b4fc;
-      padding: 16px;
-      border-radius: 8px;
-      font-size: 15px;
-      font-family: "Menlo", "Monaco", monospace;
-      resize: vertical;
-      line-height: 1.6;
-    }
-    textarea:focus { outline: 1px solid var(--accent); }
-
-    .action-bar {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-      flex-wrap: wrap;
-    }
-
-    button.primary {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 10px 24px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 15px;
-      flex-grow: 1;
-    }
-    button.primary:hover { background: var(--accent-hover); }
-
-    button.secondary {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 10px 16px;
-      border-radius: 8px;
-      cursor: pointer;
+    .output-wrapper { flex: 1; display: flex; flex-direction: column; min-height: 500px; }
+    .output-box {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.4);
+      border-radius: 12px;
+      padding: 24px;
+      font-family: "Menlo", "Monaco", "Courier New", monospace;
+      white-space: pre-wrap;
+      overflow-y: auto;
+      border: 1px solid rgba(255,255,255,0.05);
+      line-height: 1.7;
       font-size: 14px;
+      color: #e2e8f0;
     }
-    button.secondary:hover { background: rgba(255,255,255,0.05); }
-
-    .clear-tags {
-      font-size: 12px;
-      color: var(--accent);
-      cursor: pointer;
-      text-decoration: underline;
-    }
+    
+    @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
-  <div class="wrap">
+<div class="container">
+  
+  <aside class="card">
     <header>
-      <h1>Suno 提示词生成器 Pro</h1>
-      <p class="lead">通过中文选项组合，一键生成高质量的 Suno 英文提示词。支持风格、乐器、情绪及专业参数定制。</p>
+      <h1>🎹 Suno 全能工作台</h1>
+      <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">v8.5 终极完整版 / 全曲式 / 全选项</p>
     </header>
 
-    <div class="grid-container">
-      
-      <aside class="sidebar">
-        <div class="section-card">
-          <div class="section-title">基础架构</div>
-          
-          <div style="margin-bottom: 12px;">
-            <label>音乐流派 (Genre)</label>
-            <select id="genreSelect" onchange="updatePrompt()">
-              </select>
-          </div>
-
-          <div style="margin-bottom: 12px;">
-            <label>人声类型 (Vocals)</label>
-            <select id="vocalSelect" onchange="updatePrompt()">
-              <option value="">随机 / 默认</option>
-              <option value="Male Vocals">男声 (Male)</option>
-              <option value="Female Vocals">女声 (Female)</option>
-              <option value="Duet">男女对唱 (Duet)</option>
-              <option value="Choir">合唱团 (Choir)</option>
-              <option value="Instrumental">纯音乐 (Instrumental)</option>
-            </select>
-          </div>
-
-          <div style="margin-bottom: 12px;">
-            <label>速度 (Tempo)</label>
-            <select id="tempoSelect" onchange="updatePrompt()">
-              <option value="">默认</option>
-              <option value="Slow Tempo, 60-80 BPM">慢速 (Slow)</option>
-              <option value="Mid-Tempo, 90-110 BPM">中速 (Mid)</option>
-              <option value="Up-Tempo, 120-140 BPM">快速 (Fast)</option>
-              <option value="Very Fast, 160+ BPM">极速 (Very Fast)</option>
-            </select>
+    <div style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; border:1px dashed rgba(255,255,255,0.1); margin-top:15px;">
+      <div class="form-group" style="margin-bottom:0;">
+        <label style="cursor:pointer;" onclick="toggleConfig()">⚙️ API 设置 (点击展开)</label>
+        <div id="configArea" style="display:none; margin-top:10px;">
+          <input type="password" id="apiKey" placeholder="API Key (sk-...)" style="margin-bottom:8px;" />
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="baseUrl" value="https://api.deepseek.com" placeholder="Base URL" />
+            <input type="text" id="modelName" value="deepseek-chat" placeholder="Model" />
           </div>
         </div>
-
-        <div class="section-card">
-            <div class="section-title">生成操作</div>
-            <button class="primary" id="generateBtn" onclick="updatePrompt(true)">🎲 随机组合并生成</button>
-            <div style="margin-top:8px; font-size:12px; color:var(--muted); text-align:center;">
-                上方按钮会根据选定流派，随机填充右侧的细节标签。
-            </div>
-        </div>
-      </aside>
-
-      <main class="main-area">
-        
-        <div class="section-card">
-          <div class="section-title">
-            <span>特色乐器 (Instruments)</span>
-            <span class="clear-tags" onclick="clearTags('inst')">清空</span>
-          </div>
-          <div class="tags-wrapper" id="instContainer">
-            </div>
-        </div>
-
-        <div class="section-card">
-          <div class="section-title">
-            <span>情绪与氛围 (Mood & Vibe)</span>
-            <span class="clear-tags" onclick="clearTags('mood')">清空</span>
-          </div>
-          <div class="tags-wrapper" id="moodContainer"></div>
-        </div>
-
-        <div class="section-card">
-          <div class="section-title">
-            <span>制作与音质 (Production)</span>
-            <span class="clear-tags" onclick="clearTags('tech')">清空</span>
-          </div>
-          <div class="tags-wrapper" id="techContainer"></div>
-        </div>
-
-        <div class="section-card">
-          <div class="section-title">最终提示词 (Result)</div>
-          <textarea id="resultBox" placeholder="选择上方标签或点击生成按钮，此处将显示生成的英文 Prompt..." readonly></textarea>
-          
-          <div class="action-bar">
-            <button class="primary" style="flex-grow:0; width:120px;" onclick="copyToClipboard()">复制提示词</button>
-            <button class="secondary" onclick="updatePrompt(false)">仅刷新文本</button>
-            <span id="copyMsg" style="color:#4ade80; display:none; align-self:center; font-size:13px;">✅ 已复制!</span>
-          </div>
-        </div>
-
-      </main>
+      </div>
     </div>
-  </div>
 
-  <script>
-    // --- Data Definitions (Chinese Label -> English Value) ---
+    <h2>1. 核心与结构 (Core & Form)</h2>
+    <div class="form-group">
+      <label>💡 创作主题 / 故事线</label>
+      <textarea id="topic" rows="2" placeholder="例如：一个关于时间旅行的爱情故事..."></textarea>
+    </div>
+
+    <div class="params-grid">
+      <div class="form-group">
+        <label>📐 曲式结构 (Form)</label>
+        <select id="songStructure">
+          <option value="pop_standard">ABAC (常用流行) - V1-C-V2-C</option>
+          <option value="pop_complex">ABABC (完整流行) - V-P-C-V-P-C-B-C</option>
+          <option value="one_part">A (一段体) - 重复主歌</option>
+          <option value="two_part">AB (二段体) - 主歌+副歌</option>
+          <option value="three_part">ABC (三段体) - 主歌+副歌+桥段</option>
+          <option value="rondo">ABACAD (回旋曲式)</option>
+          <option value="free">自由体 (Free Form)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>📝 作词风格 (已恢复完整库)</label>
+        <select id="lyricStyle">
+          <optgroup label="流行与大师">
+            <option value="pop">通用流行 (Standard Pop)</option>
+            <option value="fang">方文山 (中国风 R&B)</option>
+            <option value="lin">林夕 (都市哲思)</option>
+            <option value="wyman">黄伟文 (犀利/怪诞)</option>
+            <option value="li">李宗盛 (叙事/沧桑)</option>
+          </optgroup>
+          <optgroup label="二次元与幻想 (ACG)">
+            <option value="anime_hot">日系热血 (Anime Hot)</option>
+            <option value="anime_moe">日系可爱 (Anime Moe)</option>
+            <option value="vocaloid">Vocaloid (抽象/快嘴)</option>
+            <option value="fantasy">奇幻史诗 (Fantasy)</option>
+            <option value="cyberpunk">赛博朋克 (Cyberpunk)</option>
+          </optgroup>
+          <optgroup label="叙事与影视">
+            <option value="musical">音乐剧 (Musical)</option>
+            <option value="movie">电影叙事 (Cinematic)</option>
+            <option value="wuxia">武侠江湖 (Wuxia)</option>
+            <option value="folk">叙事民谣 (Folk)</option>
+          </optgroup>
+          <optgroup label="特定人群与场景">
+            <option value="children">儿童/卡通 (Children)</option>
+            <option value="campus">校园青春 (Campus)</option>
+            <option value="rap">说唱 (Rap/HipHop)</option>
+            <option value="poetry">现代诗 (Modern Poetry)</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>📏 歌词格律备注 (字数/段落约束)</label>
+      <input type="text" id="lyricConstraint" placeholder="例如：主歌每句7个字，副歌重复三遍，押韵工整..." />
+    </div>
+
+    <h2>2. 音乐参数 (Multi-Select)</h2>
     
-    const genres = [
-      { label: "流行 (Pop)", value: "Pop" },
-      { label: "华语流行 (C-Pop)", value: "Mandopop, C-Pop" },
-      { label: "摇滚 (Rock)", value: "Rock" },
-      { label: "电子/舞曲 (EDM)", value: "Electronic, EDM, Dance" },
-      { label: "中国风/古风 (GuFeng)", value: "Chinese Traditional, GuFeng, Pentatonic Scale" },
-      { label: "电影配乐 (Cinematic)", value: "Cinematic Score, Epic, Soundtrack" },
-      { label: "嘻哈/说唱 (Hip Hop)", value: "Hip Hop, Trap, Rap" },
-      { label: "爵士 (Jazz)", value: "Jazz, Smooth Jazz" },
-      { label: "R&B/灵魂乐", value: "R&B, Soul, Neo-Soul" },
-      { label: "氛围音乐 (Ambient)", value: "Ambient, Ethereal, Soundscape" },
-      { label: "民谣 (Folk)", value: "Acoustic Folk, Indie Folk" },
-      { label: "赛博朋克 (Cyberpunk)", value: "Cyberpunk, Industrial, Synthwave" },
-      { label: "古典 (Classical)", value: "Classical, Orchestral" }
-    ];
+    <div class="form-group">
+      <label>🎸 音乐流派 (可多选，点击添加)</label>
+      <select id="genreSelect" onchange="addTag('genre', this)">
+        <option value="" disabled selected>👉 点击选择流派 (完整库)...</option>
+        <optgroup label="流行 (Pop)">
+          <option value="Mandopop">华语流行 (Mandopop)</option>
+          <option value="Cantopop">粤语流行 (Cantopop)</option>
+          <option value="J-Pop">日系流行 (J-Pop)</option>
+          <option value="K-Pop">韩系流行 (K-Pop)</option>
+          <option value="City Pop">城市流行 (City Pop)</option>
+          <option value="Anime Song">动漫歌曲 (Ani-Song)</option>
+          <option value="Children's Music">儿歌 (Children)</option>
+        </optgroup>
+        <optgroup label="节奏与蓝调 (R&B/Hip-Hop)">
+          <option value="R&B">节奏蓝调 (R&B)</option>
+          <option value="Neo-Soul">新灵魂乐 (Neo-Soul)</option>
+          <option value="Hip-Hop">嘻哈 (Hip-Hop)</option>
+          <option value="Trap">陷阱音乐 (Trap)</option>
+          <option value="Lo-Fi">低保真 (Lo-Fi)</option>
+        </optgroup>
+        <optgroup label="摇滚 (Rock)">
+          <option value="Rock">摇滚 (Rock)</option>
+          <option value="Pop Punk">流行朋克 (Pop Punk)</option>
+          <option value="Post-Rock">后摇 (Post-Rock)</option>
+          <option value="Heavy Metal">重金属 (Heavy Metal)</option>
+          <option value="Nu-Metal">新金属 (Nu-Metal)</option>
+        </optgroup>
+        <optgroup label="电子 (Electronic)">
+          <option value="EDM">电子舞曲 (EDM)</option>
+          <option value="Kawaii Future Bass">可爱未来贝斯</option>
+          <option value="Synthwave">合成器波 (Synthwave)</option>
+          <option value="Cyberpunk">赛博朋克 (Cyberpunk)</option>
+          <option value="Techno">工业电子 (Techno)</option>
+          <option value="Dubstep">回响贝斯 (Dubstep)</option>
+        </optgroup>
+        <optgroup label="氛围与影视 (Atmosphere)">
+          <option value="Cinematic">电影感 (Cinematic)</option>
+          <option value="Epic">史诗 (Epic)</option>
+          <option value="Disney Style">迪士尼风格 (Disney)</option>
+          <option value="Musical Theatre">音乐剧 (Musical)</option>
+          <option value="Gothic">哥特 (Gothic)</option>
+        </optgroup>
+        <optgroup label="传统与民族">
+          <option value="Chinese Traditional">中国传统 (Traditional)</option>
+          <option value="Folk">民谣 (Folk)</option>
+          <option value="Jazz">爵士 (Jazz)</option>
+          <option value="Bossa Nova">波萨诺瓦 (Bossa Nova)</option>
+          <option value="Reggae">雷鬼 (Reggae)</option>
+        </optgroup>
+      </select>
+      <div id="genreTags" class="tags-container"></div>
+    </div>
 
-    const instruments = [
-      { label: "钢琴", value: "Piano" },
-      { label: "吉他(木)", value: "Acoustic Guitar" },
-      { label: "吉他(电)", value: "Electric Guitar" },
-      { label: "贝斯", value: "Bass" },
-      { label: "鼓组", value: "Drums" },
-      { label: "合成器", value: "Synthesizer" },
-      { label: "弦乐", value: "Strings" },
-      { label: "小提琴", value: "Violin" },
-      { label: "大提琴", value: "Cello" },
-      { label: "二胡", value: "Erhu" },
-      { label: "古筝", value: "Guzheng" },
-      { label: "琵琶", value: "Pipa" },
-      { label: "笛子", value: "Dizi Bamboo Flute" },
-      { label: "箫", value: "Xiao Flute" },
-      { label: "萨克斯", value: "Saxophone" },
-      { label: "808鼓机", value: "808 Drum Machine" }
-    ];
+    <div class="form-group">
+      <label>😊 情绪氛围 (可多选，点击添加)</label>
+      <select id="moodSelect" onchange="addTag('mood', this)">
+        <option value="" disabled selected>👉 点击选择情绪 (完整库)...</option>
+        <optgroup label="积极/能量">
+          <option value="Uplifting">励志/激昂 (Uplifting)</option>
+          <option value="Happy">快乐 (Happy)</option>
+          <option value="Energetic">充满能量 (Energetic)</option>
+          <option value="Playful">俏皮 (Playful)</option>
+          <option value="Heroic">英勇 (Heroic)</option>
+          <option value="Cute">可爱 (Cute)</option>
+        </optgroup>
+        <optgroup label="消极/低沉">
+          <option value="Sad">伤感 (Sad)</option>
+          <option value="Melancholic">忧郁 (Melancholic)</option>
+          <option value="Heartbreaking">心碎 (Heartbreaking)</option>
+          <option value="Dark">黑暗 (Dark)</option>
+          <option value="Lonely">孤独 (Lonely)</option>
+          <option value="Angry">愤怒 (Angry)</option>
+        </optgroup>
+        <optgroup label="柔和/浪漫">
+          <option value="Romantic">浪漫 (Romantic)</option>
+          <option value="Sentimental">多愁善感 (Sentimental)</option>
+          <option value="Nostalgic">怀旧 (Nostalgic)</option>
+          <option value="Chill">放松 (Chill)</option>
+          <option value="Dreamy">梦幻 (Dreamy)</option>
+          <option value="Ethereal">空灵 (Ethereal)</option>
+        </optgroup>
+        <optgroup label="紧张/神秘">
+          <option value="Mysterious">神秘 (Mysterious)</option>
+          <option value="Suspenseful">悬疑 (Suspenseful)</option>
+          <option value="Psychedelic">迷幻 (Psychedelic)</option>
+          <option value="Dramatic">戏剧性 (Dramatic)</option>
+        </optgroup>
+      </select>
+      <div id="moodTags" class="tags-container"></div>
+    </div>
 
-    const moods = [
-      { label: "欢快", value: "Upbeat, Happy" },
-      { label: "伤感", value: "Sad, Melancholic" },
-      { label: "史诗", value: "Epic, Heroic" },
-      { label: "空灵", value: "Ethereal, Dreamy" },
-      { label: "治愈", value: "Healing, Soothing" },
-      { label: "浪漫", value: "Romantic, Sentimental" },
-      { label: "黑暗", value: "Dark, Ominous" },
-      { label: "充满力量", value: "Powerful, Energetic" },
-      { label: "放松", value: "Chill, Relaxing" },
-      { label: "神秘", value: "Mysterious" },
-      { label: "怀旧", value: "Nostalgic" },
-      { label: "迷幻", value: "Psychedelic" }
-    ];
+    <div class="form-group">
+      <label>🎹 配器选择 (可多选，点击添加)</label>
+      <select id="instrumentSelect" onchange="addTag('instrument', this)">
+        <option value="" disabled selected>👉 点击选择乐器 (完整库)...</option>
+        <optgroup label="键盘类">
+          <option value="Piano">钢琴 (Piano)</option>
+          <option value="Grand Piano">三角钢琴 (Grand Piano)</option>
+          <option value="Synthesizer">合成器 (Synthesizer)</option>
+          <option value="Organ">管风琴 (Organ)</option>
+        </optgroup>
+        <optgroup label="吉他/贝斯">
+          <option value="Acoustic Guitar">木吉他 (Acoustic Guitar)</option>
+          <option value="Electric Guitar">电吉他 (Electric Guitar)</option>
+          <option value="Distorted Guitar">失真吉他 (Distorted Guitar)</option>
+          <option value="Bass Guitar">贝斯 (Bass Guitar)</option>
+          <option value="Ukulele">尤克里里 (Ukulele)</option>
+        </optgroup>
+        <optgroup label="弦乐/管乐">
+          <option value="Strings">弦乐组 (Strings)</option>
+          <option value="Violin">小提琴 (Violin)</option>
+          <option value="Cello">大提琴 (Cello)</option>
+          <option value="Saxophone">萨克斯 (Saxophone)</option>
+          <option value="Trumpet">小号 (Trumpet)</option>
+          <option value="Flute">长笛 (Flute)</option>
+        </optgroup>
+        <optgroup label="民族乐器">
+          <option value="Guzheng">古筝 (Guzheng)</option>
+          <option value="Erhu">二胡 (Erhu)</option>
+          <option value="Pipa">琵琶 (Pipa)</option>
+          <option value="Dizi">笛子 (Dizi)</option>
+          <option value="Suona">唢呐 (Suona)</option>
+          <option value="Shamisen">三味线 (Shamisen)</option>
+        </optgroup>
+        <optgroup label="打击乐">
+          <option value="Drum Kit">架子鼓 (Drum Kit)</option>
+          <option value="808 Drum">808鼓机 (808)</option>
+          <option value="Orchestral Percussion">管弦打击乐 (Orchestral)</option>
+          <option value="Glockenspiel">钟琴 (Glockenspiel)</option>
+        </optgroup>
+      </select>
+      <div id="instrumentTags" class="tags-container"></div>
+    </div>
 
-    const techSpecs = [
-      { label: "高保真", value: "High Fidelity" },
-      { label: "宽声场", value: "Wide Stereo" },
-      { label: "混响", value: "Reverb" },
-      { label: "重低音", value: "Heavy Bass" },
-      { label: "Lo-Fi质感", value: "Lo-Fi, Vinyl Crackle" },
-      { label: "清晰人声", value: "Crisp Vocals" },
-      { label: "大编制", value: "Orchestral Arrangement" },
-      { label: "极简", value: "Minimalistic" }
-    ];
+    <div class="params-grid">
+      <div class="form-group">
+        <label>⚡️ 速度 (Tempo)</label>
+        <select id="tempo">
+          <option value="Mid-tempo">中速 (Mid-tempo)</option>
+          <option value="Slow">慢板 (Slow / Ballad)</option>
+          <option value="Upbeat">轻快 (Upbeat)</option>
+          <option value="Fast">快速 (Fast / High BPM)</option>
+          <option value="Dynamic">变速 (Dynamic)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>🎤 人声 (Vocal)</label>
+        <select id="vocal">
+          <option value="Male Vocals">男声 (Male)</option>
+          <option value="Female Vocals">女声 (Female)</option>
+          <option value="Duet">男女对唱 (Duet)</option>
+          <option value="Choir">合唱团 (Choir)</option>
+          <option value="Children">童声 (Children)</option>
+          <option value="Whispering">低语/气声 (Whispering)</option>
+          <option value="Opera Vocals">美声 (Opera)</option>
+          <option value="Cute Vocals">萌系人声 (Cute)</option>
+          <option value="Autotune">电音人声 (Autotune)</option>
+        </select>
+      </div>
+    </div>
 
-    // --- State Management ---
-    const state = {
-      genre: genres[0].value,
-      vocal: "",
-      tempo: "",
-      selectedInsts: new Set(),
-      selectedMoods: new Set(),
-      selectedTech: new Set()
-    };
+    <div class="btn-group">
+      <button class="btn btn-secondary btn-small" onclick="randomizeSettings()" style="flex:1">🎲 随机组合</button>
+      <button class="btn btn-secondary btn-small" onclick="clearSettings()" style="flex:1">🗑️ 重置</button>
+    </div>
 
-    // --- Initialization ---
-    function init() {
-      // Populate Genre Select
-      const genreSel = document.getElementById('genreSelect');
-      genres.forEach(g => {
-        const opt = document.createElement('option');
-        opt.value = g.value;
-        opt.textContent = g.label;
-        genreSel.appendChild(opt);
-      });
+    <button id="runBtn" class="btn">✨ 立即生成 (Lyrics + Tags)</button>
+  </aside>
 
-      // Render Tags
-      renderTags('instContainer', instruments, state.selectedInsts);
-      renderTags('moodContainer', moods, state.selectedMoods);
-      renderTags('techContainer', techSpecs, state.selectedTech);
+  <main class="card output-wrapper">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('lyricsTab')">📝 歌词 (Lyrics)</button>
+      <button class="tab-btn" onclick="switchTab('sunoTab')">🎵 Suno 提示词 (Tags)</button>
+    </div>
 
-      // Initial Generate
-      updatePrompt(false);
-    }
+    <div id="lyricsTab" class="tab-content active">
+      <div class="output-box" id="lyricsOutput">这里将显示生成的歌词...
+-----------------------
+💡 v8.5 终极版：
+1. 全面恢复了 60+ 种流派、乐器和情绪选项。
+2. 结合了【曲式结构】(如 ABAC) 和【格律备注】功能。
+3. 点击下方标签可删除，支持复杂的多风格混合。</div>
+      <div style="margin-top:15px;">
+        <button class="btn btn-secondary" onclick="copyText('lyricsOutput')">📋 复制歌词</button>
+      </div>
+    </div>
 
-    function renderTags(containerId, dataList, storageSet) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = '';
-      dataList.forEach(item => {
-        const btn = document.createElement('div');
-        btn.className = 'tag-btn';
-        if(storageSet.has(item.value)) btn.classList.add('active');
-        btn.textContent = item.label;
-        btn.onclick = () => {
-          if (storageSet.has(item.value)) {
-            storageSet.delete(item.value);
-            btn.classList.remove('active');
-          } else {
-            storageSet.add(item.value);
-            btn.classList.add('active');
-          }
-          updatePrompt(false); // Update text without full randomization
-        };
-        container.appendChild(btn);
-      });
-    }
+    <div id="sunoTab" class="tab-content">
+      <div style="background:rgba(245, 158, 11, 0.15); border:1px solid rgba(245, 158, 11, 0.3); color:#fcd34d; padding:12px; border-radius:8px; font-size:13px; margin-bottom:15px; line-height:1.5;">
+        <strong>Suno 混合逻辑：</strong><br>
+        AI 会将所有选中的流派、情绪、乐器标签进行智能权重分配，生成符合逻辑的英文 Tags。
+      </div>
+      <div class="output-box" id="sunoOutput">Tags 将显示在这里...</div>
+      <div style="margin-top:15px;">
+        <button class="btn btn-secondary" onclick="copyText('sunoOutput')">📋 复制 Tags</button>
+      </div>
+    </div>
 
-    // --- Logic ---
+  </main>
+</div>
 
-    function clearTags(type) {
-      if(type === 'inst') state.selectedInsts.clear();
-      if(type === 'mood') state.selectedMoods.clear();
-      if(type === 'tech') state.selectedTech.clear();
-      
-      // Re-render to clear UI classes
-      renderTags('instContainer', instruments, state.selectedInsts);
-      renderTags('moodContainer', moods, state.selectedMoods);
-      renderTags('techContainer', techSpecs, state.selectedTech);
-      
-      updatePrompt(false);
-    }
+<script>
+  // === 1. 数据状态管理 ===
+  const state = {
+    genre: new Set(),
+    mood: new Set(),
+    instrument: new Set()
+  };
 
-    function pickRandom(arr, count) {
-      const shuffled = arr.sort(() => 0.5 - Math.random());
-      return shuffled.slice(0, count);
-    }
+  // === 2. 系统提示词 (包含所有风格) ===
+  const STRUCTURE_MAP = {
+    pop_standard: "结构要求：ABAC (Verse 1 - Chorus - Verse 2 - Chorus - Outro)",
+    pop_complex: "结构要求：ABABC (Verse - Pre-Chorus - Chorus - Verse - Pre-Chorus - Chorus - Bridge - Chorus - Outro)",
+    one_part: "结构要求：一段体 A (Verse - Verse - Verse... 循环)",
+    two_part: "结构要求：二段体 AB (Verse - Chorus 循环)",
+    three_part: "结构要求：三段体 ABC (Verse - Chorus - Bridge)",
+    rondo: "结构要求：回旋曲 ABACAD (Verse - Chorus - Verse - Chorus - Bridge - Chorus)",
+    free: "结构要求：自由体 (Free Form)"
+  };
 
-    function updatePrompt(randomize = false) {
-      // Update basic selects
-      state.genre = document.getElementById('genreSelect').value;
-      state.vocal = document.getElementById('vocalSelect').value;
-      state.tempo = document.getElementById('tempoSelect').value;
+  const LYRIC_SYSTEM_PROMPTS = {
+    pop: `你是一个专业的流行歌曲作词人。语言通俗易懂，富有感染力，押韵自然。`,
+    fang: `你是一个模仿“方文山”风格的作词大师。特点：画面感极强（像电影镜头）、量词错位（一盏离愁）、名词作动词、多用中国风意象。`,
+    lin: `你是一个模仿“林夕”风格的作词大师。特点：哲理与辩证（悲哀是真的）、表现“求而不得”的都市寂寞感、隐喻与借代。金句频出。`,
+    wyman: `你是一个模仿“黄伟文”风格的作词人。特点：用词犀利、时尚、偶尔怪诞，喜欢从日常小物切入大道理。`,
+    li: `你是一个模仿“李宗盛”风格的作词人。特点：半念半唱的语感，平铺直叙但直击人心，充满沧桑感。`,
+    anime_hot: `你是一个日系热血动漫歌曲作词人。关键词：羁绊、梦想、未来、燃烧、翅膀。风格激昂。`,
+    anime_moe: `你是一个日系可爱/萌系歌曲作词人。用词甜美、活泼，多用语气词，描写恋爱的心情。`,
+    vocaloid: `你是一个 Vocaloid 风格作词人。歌词抽象、语速快、带有科幻感或崩坏感。`,
+    fantasy: `你是一个奇幻史诗作词人。描写异世界、龙、魔法、战争或神话传说。`,
+    cyberpunk: `你是一个赛博朋克风格作词人。关键词：霓虹、雨夜、数据、机械、虚无。`,
+    musical: `你是一个音乐剧作词人。歌词需要像角色的“对白”，有强烈的情绪起伏和戏剧张力，推动剧情发展。`,
+    movie: `你是一个电影插曲作词人。歌词要有强烈的叙事性，像在讲一个完整的故事，画面感强。`,
+    wuxia: `你是一个武侠风格作词人。描写江湖、恩怨、刀剑、酒、侠客行，古风但不堆砌辞藻。`,
+    folk: `你是一个叙事民谣作词人。用最朴实的语言，描写平凡人的生活、旅行、姑娘、南方/北方。`,
+    children: `你是一个儿歌作词人。语言极其简单，多用叠词（AABB），内容积极向上。`,
+    campus: `你是一个校园民谣作词人。描写操场、单车、白衬衫、暗恋、毕业，充满怀旧感。`,
+    rap: `你是一个专业的 Rapper。你需要创作一首 Flow 独特、押韵复杂的说唱歌词。包含 Intro, Verse, Hook。`,
+    poetry: `你是一位现代诗人。你的歌词像诗一样优美，不拘泥于传统结构，注重意象和情感的流动。`
+  };
 
-      // If Randomize Button clicked, auto-select some tags
-      if (randomize) {
-        // Clear current sets
-        state.selectedInsts.clear();
-        state.selectedMoods.clear();
-        state.selectedTech.clear();
+  const SUNO_SYSTEM_PROMPT = `
+    你是一个 Suno AI 音乐提示词专家。
+    任务：根据用户提供的主题、流派列表、情绪列表、乐器列表，生成一段用于 Suno v3.5 的英文提示词 (Tags)。
+    
+    输出规则：
+    1. **仅输出英文单词**，用逗号分隔。
+    2. 不要输出任何中文或解释。
+    3. 综合所有输入的标签，确保风格融合逻辑通顺。
+    4. 自动补充相关的专业术语。
+  `;
 
-        // Logic: Pick 1-2 instruments, 1-2 moods, 1 tech
-        const randomInsts = pickRandom(instruments, Math.floor(Math.random() * 2) + 1);
-        const randomMoods = pickRandom(moods, Math.floor(Math.random() * 2) + 1);
-        const randomTech = pickRandom(techSpecs, 1);
+  // === 3. 标签交互逻辑 ===
+  function addTag(type, selectElement) {
+    const value = selectElement.value;
+    if (!value) return;
+    
+    state[type].add(value);
+    renderTags(type);
+    selectElement.value = "";
+  }
 
-        randomInsts.forEach(i => state.selectedInsts.add(i.value));
-        randomMoods.forEach(m => state.selectedMoods.add(m.value));
-        randomTech.forEach(t => state.selectedTech.add(t.value));
+  function removeTag(type, value) {
+    state[type].delete(value);
+    renderTags(type);
+  }
 
-        // Re-render UI to show what was picked
-        renderTags('instContainer', instruments, state.selectedInsts);
-        renderTags('moodContainer', moods, state.selectedMoods);
-        renderTags('techContainer', techSpecs, state.selectedTech);
+  function renderTags(type) {
+    const container = document.getElementById(type + 'Tags');
+    container.innerHTML = '';
+    
+    state[type].forEach(val => {
+      const tag = document.createElement('span');
+      tag.className = 'tag';
+      tag.innerText = val;
+      tag.onclick = () => removeTag(type, val);
+      container.appendChild(tag);
+    });
+  }
+
+  // === 4. 界面基础交互 ===
+  function toggleConfig() {
+    const el = document.getElementById('configArea');
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    const target = event.target || event.srcElement; 
+    if(target) target.classList.add('active');
+  }
+
+  window.addEventListener('load', () => {
+    ['apiKey', 'baseUrl', 'modelName'].forEach(key => {
+      const val = localStorage.getItem('suno_v85_' + key);
+      if(val) document.getElementById(key).value = val;
+    });
+  });
+
+  // 随机功能
+  function randomizeSettings() {
+    // 随机基本选项
+    const simpleIds = ['lyricStyle', 'songStructure', 'tempo', 'vocal'];
+    simpleIds.forEach(id => {
+      const select = document.getElementById(id);
+      const options = Array.from(select.querySelectorAll('option'));
+      if(options.length > 0) {
+        const validOptions = options.filter(o => !o.disabled && !o.parentElement.label); // 简单过滤
+        // 如果有optgroup，querySelectorAll('option')会包含所有，直接随机即可，排除第一项disabled
+        const allOpts = Array.from(select.options).filter(o => !o.disabled);
+        select.value = allOpts[Math.floor(Math.random() * allOpts.length)].value;
       }
+    });
 
-      // Construct Prompt String
-      let parts = [];
+    // 随机添加标签
+    ['genre', 'mood', 'instrument'].forEach(type => {
+      state[type].clear();
+      const select = document.getElementById(type + 'Select');
+      const options = Array.from(select.options).filter(o => !o.disabled);
       
-      // 1. Style/Genre (Required)
-      if (state.genre) parts.push(state.genre);
+      const count = Math.floor(Math.random() * 2) + 1; 
+      for(let i=0; i<count; i++) {
+        const randomOpt = options[Math.floor(Math.random() * options.length)];
+        state[type].add(randomOpt.value);
+      }
+      renderTags(type);
+    });
+  }
 
-      // 2. Moods
-      if (state.selectedMoods.size > 0) parts.push(...state.selectedMoods);
+  // 清空功能
+  function clearSettings() {
+    document.getElementById('topic').value = '';
+    document.getElementById('lyricConstraint').value = '';
+    
+    state.genre.clear(); state.mood.clear(); state.instrument.clear();
+    renderTags('genre'); renderTags('mood'); renderTags('instrument');
 
-      // 3. Instruments
-      if (state.selectedInsts.size > 0) parts.push(...state.selectedInsts);
+    const selectIds = ['lyricStyle', 'songStructure', 'tempo', 'vocal'];
+    selectIds.forEach(id => {
+      const select = document.getElementById(id);
+      // 尝试重置到第一个有效选项
+      const options = select.querySelectorAll('option');
+      for(let opt of options) {
+        if(!opt.disabled) {
+          select.value = opt.value;
+          break;
+        }
+      }
+    });
+    
+    document.getElementById('lyricsOutput').innerText = '这里将显示生成的歌词...';
+    document.getElementById('sunoOutput').innerText = 'Tags 将显示在这里...';
+  }
 
-      // 4. Vocals
-      if (state.vocal) parts.push(state.vocal);
+  // === 5. 核心生成逻辑 ===
+  document.getElementById('runBtn').addEventListener('click', async () => {
+    const apiKey = document.getElementById('apiKey').value.trim();
+    if(!apiKey) return alert('请先在上方设置中填写 API Key');
+    
+    const topic = document.getElementById('topic').value.trim();
+    if(!topic) return alert('请填写创作主题');
 
-      // 5. Tempo
-      if (state.tempo) parts.push(state.tempo);
+    setLoading(true);
 
-      // 6. Tech
-      if (state.selectedTech.size > 0) parts.push(...state.selectedTech);
+    const config = {
+      apiKey,
+      baseUrl: document.getElementById('baseUrl').value.trim(),
+      modelName: document.getElementById('modelName').value.trim(),
+      topic,
+      lyricStyle: document.getElementById('lyricStyle').value,
+      songStructure: document.getElementById('songStructure').value,
+      constraint: document.getElementById('lyricConstraint').value.trim(),
+      tempo: document.getElementById('tempo').value,
+      vocal: document.getElementById('vocal').value,
+      genres: Array.from(state.genre).join(', '),
+      moods: Array.from(state.mood).join(', '),
+      instruments: Array.from(state.instrument).join(', ')
+    };
+    
+    localStorage.setItem('suno_v85_apiKey', config.apiKey);
+    localStorage.setItem('suno_v85_baseUrl', config.baseUrl);
+    localStorage.setItem('suno_v85_modelName', config.modelName);
 
-      // Final string assembly
-      const promptText = parts.join(', ');
-      document.getElementById('resultBox').value = promptText;
+    try {
+      await Promise.all([
+        generateLyrics(config),
+        generateSunoTags(config)
+      ]);
+    } catch (e) {
+      alert('生成出错: ' + e.message);
+    } finally {
+      setLoading(false);
     }
+  });
 
-    function copyToClipboard() {
-      const el = document.getElementById('resultBox');
-      el.select();
-      document.execCommand('copy');
+  async function callAI(messages, config) {
+    const res = await fetch(`${config.baseUrl}/chat/completions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${config.apiKey}` },
+      body: JSON.stringify({
+        model: config.modelName,
+        messages: messages,
+        temperature: 0.7,
+        stream: false
+      })
+    });
+    const data = await res.json();
+    if(data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+    return data.choices[0].message.content;
+  }
+
+  async function generateLyrics(config) {
+    const outputDiv = document.getElementById('lyricsOutput');
+    outputDiv.innerText = "⏳ 正在构建结构 [" + config.songStructure + "] 并推敲歌词...";
+    
+    const sysPrompt = LYRIC_SYSTEM_PROMPTS[config.lyricStyle] || LYRIC_SYSTEM_PROMPTS.pop;
+    const structurePrompt = STRUCTURE_MAP[config.songStructure] || STRUCTURE_MAP.pop_standard;
+    
+    const userPrompt = `
+      创作任务：写一首完整的歌词。
+      主题 (Topic): ${config.topic}
       
-      const msg = document.getElementById('copyMsg');
-      msg.style.display = 'block';
-      setTimeout(() => {
-        msg.style.display = 'none';
-      }, 2000);
+      【严格约束】
+      1. ${structurePrompt}
+      2. 必须严格遵守以下 SNO 标准标签：[Verse], [Chorus], [Bridge], [Intro], [Outro]。
+      3. ${config.constraint ? `格律/字数要求: ${config.constraint}` : "每行字数请保持韵律整齐。"}
+      4. 音乐风格参考: ${config.genres}, ${config.moods}
+      
+      请直接输出歌词内容，不要包含多余的对话。
+    `;
+
+    const result = await callAI([
+      { role: "system", content: sysPrompt },
+      { role: "user", content: userPrompt }
+    ], config);
+    
+    outputDiv.innerText = result;
+  }
+
+  async function generateSunoTags(config) {
+    const outputDiv = document.getElementById('sunoOutput');
+    outputDiv.innerText = "⏳ 正在融合多种流派与乐器...";
+    
+    const userPrompt = `
+      Generate Suno v3.5 Tags based on:
+      Topic: ${config.topic}
+      Genres: ${config.genres || 'Pop'}
+      Moods: ${config.moods}
+      Instruments: ${config.instruments}
+      Tempo: ${config.tempo}
+      Vocals: ${config.vocal}
+      
+      Ensure the tags are comma-separated English words.
+    `;
+
+    const result = await callAI([
+      { role: "system", content: SUNO_SYSTEM_PROMPT },
+      { role: "user", content: userPrompt }
+    ], config);
+    
+    outputDiv.innerText = result;
+  }
+
+  function copyText(id) {
+    const el = document.getElementById(id);
+    if(el) {
+      navigator.clipboard.writeText(el.innerText);
+      alert('已复制');
     }
-
-    // Start
-    init();
-
-  </script>
+  }
+  
+  function setLoading(isLoading) {
+    const btn = document.getElementById('runBtn');
+    if(btn) {
+      btn.disabled = isLoading;
+      btn.innerHTML = isLoading ? '⚡️ AI 正在创作中...' : '✨ 立即生成 (Lyrics + Tags)';
+    }
+  }
+</script>
 </body>
 </html>
