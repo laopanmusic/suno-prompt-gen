@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Suno & 歌词全能工作台 v9.4 (历史记录版)</title>
+  <title>Suno & 歌词全能工作台 v9.3 (自动配置版)</title>
   <style>
     :root {
       --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
@@ -126,71 +126,6 @@
       font-size: 14px;
       color: #e2e8f0;
     }
-
-    /* History List Styles */
-    .history-list {
-      flex: 1;
-      overflow-y: auto;
-      padding-right: 5px;
-    }
-    .history-item {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      padding: 15px;
-      margin-bottom: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .history-item:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(139, 92, 246, 0.4);
-      transform: translateX(4px);
-    }
-    .history-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-    .history-topic {
-      font-size: 14px;
-      font-weight: 700;
-      color: #e2e8f0;
-      margin-bottom: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .history-preview {
-      font-size: 12px;
-      color: #94a3b8;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      line-height: 1.4;
-    }
-    .history-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 10px;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      padding-top: 8px;
-    }
-    .history-btn {
-      background: transparent;
-      border: none;
-      color: var(--accent);
-      font-size: 12px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .history-btn.delete { color: #ef4444; }
-    .history-btn:hover { text-decoration: underline; }
     
     @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
   </style>
@@ -202,7 +137,7 @@
   <aside class="card">
     <header>
       <h1>🎹 Suno 全能工作台</h1>
-      <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">v9.4 历史记录版 / 高音质 / 自动配置</p>
+      <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">v9.3 高音质版 / 精简前奏 / 智能预设</p>
     </header>
 
     <div style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; border:1px dashed rgba(255,255,255,0.1); margin-top:15px;">
@@ -496,15 +431,14 @@
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('lyricsTab')">📝 歌词 (Lyrics)</button>
       <button class="tab-btn" onclick="switchTab('sunoTab')">🎵 Suno 提示词 (Tags)</button>
-      <button class="tab-btn" onclick="switchTab('historyTab')">📜 历史记录 (History)</button>
     </div>
 
     <div id="lyricsTab" class="tab-content active">
       <div class="output-box" id="lyricsOutput">这里将显示生成的歌词...
 -----------------------
-💡 v9.4 更新说明：
-1. 【历史记录功能】：现在每次生成成功后，结果会自动保存。您可以点击上方的“📜 历史记录”标签查看，并随时回填到这里。
-2. 【自动配置】：首次打开时，DeepSeek 的 API 地址和模型名称会自动填好，您只需粘贴 Key。
+💡 v9.3 更新说明：
+1. 【自动配置】：首次打开时，DeepSeek 的 API 地址和模型名称会自动填好，您只需粘贴 Key。
+2. 【API 升级】：OpenAI 默认使用 gpt-4o；Gemini 已更新至最新的 2.0 Flash Exp 模型。
 3. 【音质强化】：无论选择什么风格，提示词 (Tags) 末尾会自动加入 "High Fidelity, Masterpiece" 等高音质标签。</div>
       <div style="margin-top:15px;">
         <button class="btn btn-secondary" onclick="copyText('lyricsOutput')">📋 复制歌词</button>
@@ -513,21 +447,12 @@
 
     <div id="sunoTab" class="tab-content">
       <div style="background:rgba(245, 158, 11, 0.15); border:1px solid rgba(245, 158, 11, 0.3); color:#fcd34d; padding:12px; border-radius:8px; font-size:13px; margin-bottom:15px; line-height:1.5;">
-        <strong>Suno 提示词逻辑 (v9.4 升级版)：</strong><br>
+        <strong>Suno 提示词逻辑 (v9.3 升级版)：</strong><br>
         AI 现在会强制加入高音质标签，并确保你在前奏中需要的乐器（如“琵琶”）也被列入风格标签中，实现“歌词+提示词”的双重控制。
       </div>
       <div class="output-box" id="sunoOutput">Tags 将显示在这里...</div>
       <div style="margin-top:15px;">
         <button class="btn btn-secondary" onclick="copyText('sunoOutput')">📋 复制 Tags</button>
-      </div>
-    </div>
-
-    <div id="historyTab" class="tab-content">
-      <div style="margin-bottom:15px; font-size:12px; color:var(--text-muted);">
-        系统自动保存最近 10 条生成记录。点击卡片可回填内容。
-      </div>
-      <div id="historyList" class="history-list">
-        <!-- History items will be injected here -->
       </div>
     </div>
 
@@ -537,10 +462,16 @@
 <script>
   // === 0. API 预设配置 (已更新至最新) ===
   const API_PRESETS = {
+    // DeepSeek V3 官方配置
     deepseek: { baseUrl: "https://api.deepseek.com", model: "deepseek-chat" },
+    // OpenAI 官方 (Updated to gpt-4o)
     openai: { baseUrl: "https://api.openai.com/v1", model: "gpt-4o" },
-    gemini: { baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai", model: "gemini-2.5-flash" },
+    // Google Gemini (Updated to 2.0 Flash Experimental)
+    // 注意：2.5 尚未发布，目前最新的是 2.0 Flash Exp
+    gemini: { baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai", model: "gemini-2.0-flash-exp" },
+    // 硅基流动
     silicon: { baseUrl: "https://api.siliconflow.cn/v1", model: "deepseek-ai/DeepSeek-V3" },
+    // 自定义
     custom: { baseUrl: "", model: "" }
   };
 
@@ -763,6 +694,7 @@
     poetry: `你是一位现代诗人。歌词像诗一样优美，注重意象。`
   };
 
+  // 优化后的 Suno 提示词生成逻辑 (v9.2)
   const SUNO_SYSTEM_PROMPT = `
     You are a Suno v3.5 Music Prompt Expert.
     
@@ -834,36 +766,38 @@
     document.getElementById(tabId).classList.add('active');
   }
 
-  // === 初始化逻辑更新：自动填充 DeepSeek + 载入历史记录 ===
+  // === 初始化逻辑更新：自动填充 DeepSeek ===
   window.addEventListener('load', () => {
-    // 1. 检查 API 设置
+    // 1. 检查是否有保存的设置
     const savedProvider = localStorage.getItem('suno_v88_provider');
     const savedKey = localStorage.getItem('suno_v88_apiKey');
 
     if (savedProvider) {
+      // 如果有缓存，恢复用户上次的设置
       document.getElementById('providerSelect').value = savedProvider;
       document.getElementById('apiKey').value = savedKey || '';
       document.getElementById('baseUrl').value = localStorage.getItem('suno_v88_baseUrl') || '';
       document.getElementById('modelName').value = localStorage.getItem('suno_v88_modelName') || '';
     } else {
+      // 2. 如果是首次运行（没有缓存），默认选中 DeepSeek 并填好信息
       document.getElementById('providerSelect').value = 'deepseek';
       const deepseekPreset = API_PRESETS['deepseek'];
       document.getElementById('baseUrl').value = deepseekPreset.baseUrl;
       document.getElementById('modelName').value = deepseekPreset.model;
+      // 自动展开配置区域，方便用户填 Key
       document.getElementById('configArea').style.display = 'block';
     }
-
-    // 2. 载入历史记录
-    renderHistoryList();
   });
 
   function randomizeSettings() {
+    // Random simple selects
     ['lyricStyle', 'songStructure', 'tempo', 'vocal'].forEach(id => {
       const select = document.getElementById(id);
       const options = Array.from(select.querySelectorAll('option')).filter(o => !o.disabled && !o.parentElement.label);
       if(options.length > 0) select.value = options[Math.floor(Math.random() * options.length)].value;
     });
 
+    // Random Genre
     state.genre.clear();
     const mainKeys = Object.keys(GENRE_DATA);
     const randomMain = mainKeys[Math.floor(Math.random() * mainKeys.length)];
@@ -871,6 +805,7 @@
     state.genre.add(randomSub.value);
     renderTags('genre');
 
+    // Random Mood
     state.mood.clear();
     const moodSelect = document.getElementById('moodSelect');
     const moodOpts = Array.from(moodSelect.querySelectorAll('option')).filter(o => !o.disabled);
@@ -887,85 +822,7 @@
     document.getElementById('sunoOutput').innerText = 'Tags 将显示在这里...';
   }
 
-  // === 5. 历史记录功能模块 ===
-  const HISTORY_KEY = 'suno_v94_history';
-  const MAX_HISTORY = 10;
-
-  function addToHistory(topic, lyrics, tags) {
-    let history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-    
-    const newItem = {
-      id: Date.now(),
-      timestamp: new Date().toLocaleString(),
-      topic: topic || "未命名主题",
-      lyrics: lyrics,
-      tags: tags
-    };
-
-    history.unshift(newItem); // 添加到开头
-    if (history.length > MAX_HISTORY) {
-      history.pop(); // 保持最大数量
-    }
-
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-    renderHistoryList();
-  }
-
-  function renderHistoryList() {
-    const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-    const container = document.getElementById('historyList');
-    container.innerHTML = "";
-
-    if (history.length === 0) {
-      container.innerHTML = '<div style="text-align:center; color:#64748b; padding:20px;">暂无历史记录</div>';
-      return;
-    }
-
-    history.forEach((item, index) => {
-      const el = document.createElement('div');
-      el.className = 'history-item';
-      el.innerHTML = `
-        <div class="history-header">
-          <span>${item.timestamp}</span>
-        </div>
-        <div class="history-topic">${item.topic}</div>
-        <div class="history-preview">Tags: ${item.tags.substring(0, 50)}...</div>
-        <div class="history-actions">
-           <button class="history-btn delete" onclick="deleteHistory(event, ${index})">删除</button>
-           <button class="history-btn" onclick="restoreHistory(${index})">📝 回填 & 查看</button>
-        </div>
-      `;
-      // 点击卡片也可恢复（除了点按钮外）
-      el.onclick = (e) => {
-         if (e.target.tagName !== 'BUTTON') restoreHistory(index);
-      };
-      container.appendChild(el);
-    });
-  }
-
-  function deleteHistory(event, index) {
-    event.stopPropagation(); // 阻止触发卡片点击
-    let history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-    history.splice(index, 1);
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-    renderHistoryList();
-  }
-
-  function restoreHistory(index) {
-    let history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-    const item = history[index];
-    if (item) {
-      document.getElementById('topic').value = item.topic; // 可选：回填主题
-      document.getElementById('lyricsOutput').innerText = item.lyrics;
-      document.getElementById('sunoOutput').innerText = item.tags;
-      // 切换回歌词标签页
-      switchTab('lyricsTab');
-      // 可以加个小提示
-      // alert('已回填历史记录');
-    }
-  }
-
-  // === 6. 生成逻辑 ===
+  // === 5. 生成逻辑 (v9.2 修改核心) ===
   document.getElementById('runBtn').addEventListener('click', async () => {
     const apiKey = document.getElementById('apiKey').value.trim();
     if(!apiKey) return alert('请先在上方 API 设置中填写 Key。');
@@ -995,14 +852,7 @@
     localStorage.setItem('suno_v88_modelName', config.modelName);
 
     try {
-      // 1. 生成内容
       await Promise.all([generateLyrics(config), generateSunoTags(config)]);
-      
-      // 2. 生成成功后，保存到历史记录
-      const lyricsText = document.getElementById('lyricsOutput').innerText;
-      const tagsText = document.getElementById('sunoOutput').innerText;
-      addToHistory(topic, lyricsText, tagsText);
-
     } catch (e) {
       alert('生成出错: ' + e.message);
     } finally {
@@ -1039,6 +889,7 @@
     if(config.lyricStyle === 'red_song') sysPrompt = LYRIC_SYSTEM_PROMPTS.red_song;
     else if(config.lyricStyle === 'military') sysPrompt = LYRIC_SYSTEM_PROMPTS.military;
 
+    // v9.2: 强制要求短前奏
     const userPrompt = `
       创作任务：写一首完整的歌词。
       主题：${config.topic}
